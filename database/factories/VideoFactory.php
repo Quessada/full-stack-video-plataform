@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,13 @@ class VideoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => fake()->sentence(),
+            'description' => fake()->text('200'),
+            'privacy' => fake()->randomElement(['listed', 'unlisted', 'private']),
+            'thumbnail' => 'empty-thumbnail.jpg',
+            'file_reference' => 'www.no-url-video.com',
+            'user_id' => User::factory(),
+            'category_id' => Category::factory()
         ];
     }
 }
