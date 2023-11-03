@@ -15,7 +15,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : Response
+    public function index(): Response
     {
         $user = auth()->user();
         $categories = Category::where('user_id', $user->id)->get();
@@ -30,7 +30,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Categories/Create');    
+        return Inertia::render('Categories/Create');
     }
 
     /**
@@ -40,9 +40,19 @@ class CategoryController extends Controller
     {
         $data = $request->validated();
 
-        $category = Category::create($data);
+        if (Category::create($data)) {
+            $response = [
+                'message' => 'Category created successfully!',
+                'status' => 'success',
+            ];
+        } else {
+            $response = [
+                'message' => 'Something happened while creating the category!',
+                'status' => 'error',
+            ];
+        }
 
-        return to_route('categories.index');
+        return to_route('categories.index')->with($response);
     }
 
     /**
@@ -70,9 +80,19 @@ class CategoryController extends Controller
     {
         $data = $request->validated();
 
-        $category->update($data);
+        if ($category->update($data)) {
+            $response = [
+                'message' => 'Category updated successfully!',
+                'status' => 'success',
+            ];
+        } else {
+            $response = [
+                'message' => 'Something happened while updating the category!',
+                'status' => 'error',
+            ];
+        }
 
-        return to_route('categories.index');
+        return to_route('categories.index')->with($response);
     }
 
     /**
@@ -80,6 +100,18 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        if ($category->delete()) {
+            $response = [
+                'message' => 'Category deleted successfully!',
+                'status' => 'success',
+            ];
+        } else {
+            $response = [
+                'message' => 'Something happened while deleting the category!',
+                'status' => 'error',
+            ];
+        }
+
+        return to_route('categories.index')->with($response);
     }
 }

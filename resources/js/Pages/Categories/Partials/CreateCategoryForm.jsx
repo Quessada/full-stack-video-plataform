@@ -6,7 +6,7 @@ import { Transition } from "@headlessui/react";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function UpdateCategoryForm({ auth, className }) {
+export default function UpdateCategoryForm({ className }) {
 
     const user = usePage().props.auth.user;
 
