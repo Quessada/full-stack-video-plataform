@@ -65,7 +65,8 @@ export default function UpdateCategoryForm({ auth, className }) {
                         autoComplete="description"
                     />
 
-                    <InputError className="mt-2" message={errors.email} />
+                    <InputError className="mt-2" message={errors.description} />
+                    <InputError className="mt-2" message={errors.user_id} />
                 </div>
 
                 <div className="flex items-center gap-4">

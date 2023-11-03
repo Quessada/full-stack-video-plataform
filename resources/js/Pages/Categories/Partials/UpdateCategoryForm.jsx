@@ -60,7 +60,7 @@ export default function UpdateCategoryForm({ category, className }) {
                         autoComplete="description"
                     />
 
-                    <InputError className="mt-2" message={errors.email} />
+                    <InputError className="mt-2" message={errors.description} />
                 </div>
 
                 <div className="flex items-center gap-4">
