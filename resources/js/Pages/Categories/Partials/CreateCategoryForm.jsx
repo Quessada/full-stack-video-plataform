@@ -3,20 +3,25 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Transition } from "@headlessui/react";
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import { useState } from "react";
 
-export default function UpdateCategoryForm({ category, className }) {
+export default function UpdateCategoryForm({ auth, className }) {
 
-  const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-    name: category.name,
-    description: category.description,
-  });
+    const user = usePage().props.auth.user;
+
+    const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
+        name: "",
+        description: "",
+        user_id: user.id
+    })
 
   const submit = (e) => {
     e.preventDefault();
-
-    patch(route('categories.update', category.id),{
-        preserveScroll: true,
+    
+    // Make a POST request to the backend with the form data
+    post(route('categories.store', data), {
+      preserveScroll: true,
     });
   };
 
@@ -26,7 +31,7 @@ export default function UpdateCategoryForm({ category, className }) {
                 <h2 className="text-lg font-medium text-gray-900">Category</h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Update your category's name and/or description.
+                    Create your category.
                 </p>
             </header>
 

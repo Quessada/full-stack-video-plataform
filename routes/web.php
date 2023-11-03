@@ -39,11 +39,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/videos/{video}', [VideoController::class, 'delete'])->name('videos.delete');
 
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-    // Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::get('/categories/{category}', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::patch('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->name('categories.delete');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.delete');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

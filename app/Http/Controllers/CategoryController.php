@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,7 +17,8 @@ class CategoryController extends Controller
      */
     public function index() : Response
     {
-        $categories = Category::all();
+        $user = auth()->user();
+        $categories = Category::where('user_id', $user->id)->get();
 
         return Inertia::render('Categories/All', [
             'categories' => $categories,
@@ -26,15 +30,19 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return dd('teste');
+        return Inertia::render('Categories/Create');    
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $category = Category::create($data);
+
+        return to_route('categories.index');
     }
 
     /**
@@ -58,9 +66,13 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->update($request->all());
+        $data = $request->validated();
+
+        $category->update($data);
+
+        return to_route('categories.index');
     }
 
     /**

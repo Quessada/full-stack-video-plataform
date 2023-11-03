@@ -1,10 +1,20 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { useForm } from "@inertiajs/react";
 
 library.add(faEdit, faTrashAlt)
 
 export default function Table({ items, columns, primary, firstAction = null, secondAction = null }) {
+    
+    const { delete: destroy } = useForm();
+
+    const onDelete = (item) => {
+        destroy(route(secondAction, item.id),{
+            preserveScroll: true,
+        });
+    };
+
     return (
         <div className="relative overflow-x-auto border shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -36,7 +46,7 @@ export default function Table({ items, columns, primary, firstAction = null, sec
                             &nbsp;
                             &nbsp;
                             {
-                                secondAction && <a href={route(secondAction, item.id)} className="font-medium text-red-600 dark:text-red-500 hover:underline"><FontAwesomeIcon icon={["fas", "trash-alt"]} /></a>
+                                secondAction && <a href="#" onClick={ev => onDelete(item)} className="font-medium text-red-600 dark:text-red-500 hover:underline"><FontAwesomeIcon icon={["fas", "trash-alt"]} /></a>
                             }
                             </div>
                         </td>
