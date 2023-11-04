@@ -7,11 +7,8 @@ const columns = ["name", "description"];
 
 export default function All({ auth, categories }) {
 
-
     const { flash } = usePage().props
     
-    console.log(flash)
-
     return (
         <AuthenticatedLayout
             user={auth.user}

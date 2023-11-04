@@ -15,7 +15,9 @@ class Video extends Model
         'description',
         'privacy',
         'thumbnail',
-        'file_reference'
+        'file_reference',
+        'user_id',
+        'category_id'
     ];
 
     /**

@@ -3,24 +3,20 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Transition } from "@headlessui/react";
-import { useForm, usePage } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 
-export default function CreateCategoryForm({ className }) {
+export default function UpdateVideoForm({ category, className }) {
 
-    const user = usePage().props.auth.user;
-
-    const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
-        name: "",
-        description: "",
-        user_id: user.id
-    })
+  const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+    name: category.name,
+    description: category.description,
+  });
 
   const submit = (e) => {
     e.preventDefault();
-    
-    // Make a POST request to the backend with the form data
-    post(route('categories.store', data), {
-      preserveScroll: true,
+
+    patch(route('categories.update', category.id),{
+        preserveScroll: true,
     });
   };
 
@@ -30,7 +26,7 @@ export default function CreateCategoryForm({ className }) {
                 <h2 className="text-lg font-medium text-gray-900">Category</h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Create your category.
+                    Update your category's name and/or description.
                 </p>
             </header>
 
@@ -65,7 +61,6 @@ export default function CreateCategoryForm({ className }) {
                     />
 
                     <InputError className="mt-2" message={errors.description} />
-                    <InputError className="mt-2" message={errors.user_id} />
                 </div>
 
                 <div className="flex items-center gap-4">

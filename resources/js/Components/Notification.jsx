@@ -7,7 +7,7 @@ const Notification = ({ response, ...props }) => {
         if (response.message) {
             const timer = setTimeout(() => {
                 hideNotification();
-            }, 5000); // Automatically hide after 3 seconds (adjust as needed)
+            }, 5000);
 
             return () => clearTimeout(timer);
         }

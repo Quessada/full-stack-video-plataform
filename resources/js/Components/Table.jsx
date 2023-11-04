@@ -51,7 +51,7 @@ export default function Table({
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map((item) => (
+                    {items && items.map((item) => (
                         <tr
                             key={item.id}
                             className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"

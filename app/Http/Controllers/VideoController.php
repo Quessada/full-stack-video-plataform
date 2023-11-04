@@ -14,7 +14,8 @@ class VideoController extends Controller
      */
     public function index() : Response
     {
-        $videos = Video::all();
+        $user = auth()->user();
+        $videos = Video::where('user_id', $user->id)->get();
 
         return Inertia::render('Videos/All', [
             'videos' => $videos,
@@ -26,7 +27,7 @@ class VideoController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Videos/Create');
     }
 
     /**

@@ -33,7 +33,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
-    // Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+    Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+    Route::get('/videos/create', [VideoController::class, 'create'])->name('videos.create');
     Route::get('/videos/{video}', [VideoController::class, 'edit'])->name('videos.edit');
     Route::patch('/videos/{video}', [VideoController::class, 'update'])->name('videos.update');
     Route::delete('/videos/{video}', [VideoController::class, 'delete'])->name('videos.delete');
