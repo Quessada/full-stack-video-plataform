@@ -42,15 +42,28 @@ class Video extends Model
 
 
     /**
-     * [Description for setEnumFieldAttribute]
+     * set privacy attribute to lowercase to match the database definition
      *
      * @param mixed $value
-     * 
-     * @return [type]
      */
-    public function setPrivacydAttribute($value)
+    public function setPrivacyAttribute($value)
     {
         // Covert to lowercase before saving
         $this->attributes['privacy'] = strtolower($value);
+    }
+
+    /**
+     * get description attribute reduced characters
+     *
+     * @param mixed $value
+     */
+    public function getDescriptionAttribute($value)
+    {
+        $maxLength = 50;
+        if (strlen($value) > $maxLength) {
+            return substr($value, 0, $maxLength) . '...';
+        } else {
+            return $value;
+        }
     }
 }
