@@ -25,7 +25,7 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'name' => 'required|string|max:75',
             'description' => 'required|string|max:255',
-            'user_id' => new UserAuthenticatedRule
+            'user_id' => ['required', 'exists:users,id', new UserAuthenticatedRule],
         ];
     }
 }

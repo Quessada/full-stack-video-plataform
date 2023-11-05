@@ -14,7 +14,7 @@ class UserAuthenticatedRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!auth()->check() || auth()->id() !== $value) {
+        if (!auth()->check() || auth()->id() != $value) {
             $fail("The $attribute does not correspond to the authenticated user.");
         }
     }

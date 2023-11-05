@@ -51,7 +51,7 @@ export default function CreateVideoForm({ className }) {
         if (data.privacy == "") {
             data.privacy = document.getElementById("privacy").value;
         }
-
+        console.log("DATA = ", data)
         // Make a POST request to the backend with the form data
         post(route('videos.store', data), {
           preserveScroll: true,
