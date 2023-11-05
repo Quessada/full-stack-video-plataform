@@ -18,9 +18,21 @@ export default forwardRef(function SelectInput({ className = '', isFocused = fal
             }
             ref={input}
         >
-            {options.map((option) =>
-                <option key={option}>{option}</option>
-            )}
+            {options.map((option) => {
+                if (typeof option === 'string') {
+                    return (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    );
+                } else {
+                    return (
+                        <option key={option.value} value={option.value}>
+                            {option.label || option.value}
+                        </option>
+                    );
+                }
+            })}
         </select>
     );
 });

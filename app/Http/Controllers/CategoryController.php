@@ -114,4 +114,20 @@ class CategoryController extends Controller
 
         return to_route('categories.index')->with($response);
     }
+
+    public function getCategoriesForSelect() 
+    {
+
+        $user = auth()->user();
+        $categories = Category::where('user_id', $user->id)->get(['id', 'name']);
+
+        $categories = $categories->map(function ($category) {
+            return[ 
+                'value' => $category->id,
+                'label' => $category->name
+            ];
+        });
+
+        return $categories;
+    }
 }

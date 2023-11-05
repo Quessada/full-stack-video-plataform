@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreVideoRequest;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -33,9 +34,25 @@ class VideoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreVideoRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['thumbnail'] = $this->handleFile($data['thumbnail']);
+        $data['file_reference'] = $this->handleFile($data['file_reference']);
+        // dd($data);
+        if (Video::create($data)) {
+            $response = [
+                'message' => 'Video created successfully!',
+                'status' => 'success',
+            ];
+        } else {
+            $response = [
+                'message' => 'Something happened while creating the video!',
+                'status' => 'error',
+            ];
+        }
+
+        return to_route('videos.index')->with($response);
     }
 
     /**
@@ -70,5 +87,18 @@ class VideoController extends Controller
     public function destroy(Video $video) : void
     {
         $video->delete();
+    }
+
+    /**
+     * HandleFileVerification.
+     */
+    public function handleFile($file) : string
+    {
+        if ($file->isValid()) {
+            $fileName = uniqid().time()."_{$file->getClientOriginalName()}";
+            $storagedFile = $file->storeAs('videos', $fileName);
+        }        
+        
+        return $storagedFile ?? '';
     }
 }

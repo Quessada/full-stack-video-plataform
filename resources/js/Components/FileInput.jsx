@@ -1,4 +1,4 @@
-export default function FileInput({ className = "", acceptedTypes, ...props }) {
+export default function FileInput({ className = "", acceptedTypes, value, ...props }) {
     return (
         <input
             {...props}

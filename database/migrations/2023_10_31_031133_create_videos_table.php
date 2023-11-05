@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->enum('privacy', ['listed', 'unlisted', 'private']);
             $table->string('thumbnail')->default('empty-thumbnail.jpg');
             $table->string('file_reference');

@@ -39,4 +39,18 @@ class Video extends Model
     {
         return $this->belongsTo(Video::class);
     }
+
+
+    /**
+     * [Description for setEnumFieldAttribute]
+     *
+     * @param mixed $value
+     * 
+     * @return [type]
+     */
+    public function setPrivacydAttribute($value)
+    {
+        // Covert to lowercase before saving
+        $this->attributes['privacy'] = strtolower($value);
+    }
 }

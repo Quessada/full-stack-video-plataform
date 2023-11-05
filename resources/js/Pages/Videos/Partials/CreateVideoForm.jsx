@@ -5,36 +5,58 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import SelectInput from "@/Components/SelectInput";
 import TextInput from "@/Components/TextInput";
 import { Transition } from "@headlessui/react";
-import { Link, useForm, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useForm, usePage } from "@inertiajs/react";
+import { useEffect, useState } from "react";
+import axiosClient from "../../../axios-client";
 
 export default function CreateVideoForm({ className }) {
-    const user = usePage().props.auth.user;
 
-    const { data, setData, post, errors, processing, recentlySuccessful } =
+    const user = usePage().props.auth.user;
+    const [categoryOptions, setCategoryOptions] = useState([]);
+
+    const { data, setData, post, errors, processing, progress, recentlySuccessful } =
         useForm({
             title: "",
             description: "",
             privacy: "",
-            thumbnail: "",
-            file_reference: "",
+            thumbnail: null,
+            file_reference: null,
             user_id: user.id,
             category_id: "",
         });
+
+    const getCategoryOptions = () => {
+        axiosClient.get(route('categories.select'))
+        .then((response) => {
+            setCategoryOptions(response.data);
+        });
+    }
 
     const privacyOptions = ["Listed", "Unlisted", "Private"];
 
     const videoFileTypes = [".MP4", ".MPG", ".AVI", ".WMV", ".MOV"];
     const thumbFileTypes = [".JPG", ".GIF", ".PNG"];
 
-    
+    useEffect(() => {
+        getCategoryOptions();
+    }, [])
+
     const submit = (e) => {
         e.preventDefault();
 
+        if (data.category_id == "") {
+            data.category_id = document.getElementById("category").value;
+        }
+
+        if (data.privacy == "") {
+            data.privacy = document.getElementById("privacy").value;
+        }
+
         // Make a POST request to the backend with the form data
-        // post(route('videos.store', data), {
-        //   preserveScroll: true,
-        // });
+        post(route('videos.store', data), {
+          preserveScroll: true,
+          forceFormData: true
+        });
     };
 
     return (
@@ -79,15 +101,32 @@ export default function CreateVideoForm({ className }) {
                 </div>
 
                 <div>
+                    <InputLabel htmlFor="category" value="Category" />
+
+                    <SelectInput
+                        id="category"
+                        type="text"
+                        className="mt-1 block w-full"
+                        value={data.category_id}
+                        options={categoryOptions}
+                        onChange={(e) => setData("category_id", e.target.value)}
+                        required
+                        autoComplete="category_id"
+                    />
+
+                    <InputError className="mt-2" message={errors.category_id} />
+                </div>
+
+                <div>
                     <InputLabel htmlFor="privacy" value="Privacy" />
 
                     <SelectInput
                         id="privacy"
                         type="text"
                         className="mt-1 block w-full"
-                        value={data.privacy}
                         options={privacyOptions}
-                        onChange={(e) => setData("privacy", e.target.value)}
+                        value={data.privacy}
+                        onChange={(e) => setData('privacy', e.target.value)}
                         required
                         autoComplete="privacy"
                     />
@@ -104,7 +143,7 @@ export default function CreateVideoForm({ className }) {
                         className="mt-1 block w-full"
                         value={data.thumbnail}
                         acceptedTypes={thumbFileTypes}
-                        onChange={(e) => setData("thumbnail", e.target.value)}
+                        onChange={(e) => setData("thumbnail", e.target.files[0])}
                         required
                         autoComplete="thumbnail"
                     />
@@ -125,11 +164,17 @@ export default function CreateVideoForm({ className }) {
                         value={data.file_reference}
                         acceptedTypes={videoFileTypes}
                         onChange={(e) =>
-                            setData("file_reference", e.target.value)
+                            setData("file_reference", e.target.files[0])
                         }
                         required
                         autoComplete="file_reference"
                     />
+
+                    {progress && (
+                        <progress value={progress.percentage} max="100">
+                            {progress.percentage}%
+                        </progress>
+                    )}
 
                     <InputError
                         className="mt-2"
