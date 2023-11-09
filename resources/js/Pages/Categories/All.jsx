@@ -1,5 +1,5 @@
 import Notification from "@/Components/Notification";
-import Table from "@/Components/Table";
+import Table from "@/Components/SimpleTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
 
@@ -31,6 +31,7 @@ export default function All({ auth, categories }) {
                         <Table
                             items={categories}
                             columns={columns}
+                            model={'category'}
                             primary="Category ID"
                             firstAction={"categories.edit"}
                             secondAction={"categories.delete"}

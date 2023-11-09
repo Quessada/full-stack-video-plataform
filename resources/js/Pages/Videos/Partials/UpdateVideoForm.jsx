@@ -1,50 +1,85 @@
+import FileInput from "@/Components/FileInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
+import SelectInput from "@/Components/SelectInput";
 import TextInput from "@/Components/TextInput";
+import axiosClient from "@/axios-client";
 import { Transition } from "@headlessui/react";
-import { Link, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 
-export default function UpdateVideoForm({ category, className }) {
+export default function UpdateVideoForm({ video, className }) {
 
-  const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-    name: category.name,
-    description: category.description,
-  });
+    const [categoryOptions, setCategoryOptions] = useState([]);
 
-  const submit = (e) => {
-    e.preventDefault();
+    const privacyOptions = ["Listed", "Unlisted", "Private"];
 
-    patch(route('categories.update', category.id),{
-        preserveScroll: true,
-    });
-  };
+    const videoFileTypes = [".MP4", ".MPG", ".AVI", ".WMV", ".MOV"];
+    const thumbFileTypes = [".JPG", ".GIF", ".PNG"];
 
-  return (
-    <section className={className}>
+    const { data, setData, patch, errors, processing, progress, recentlySuccessful } =
+        useForm({
+            title: video.title,
+            description: video.description,
+            privacy: video.privacy,
+            thumbnail: video.thumbnail,
+            file_reference: video.file_reference,
+            user_id: video.id,
+            category_id: video.category_id,
+        });
+
+    const getCategoryOptions = () => {
+        console.log("VIDEOOOO == ", video)
+        axiosClient.get(route("categories.select")).then((response) => {
+            setCategoryOptions(response.data);
+        });
+    };
+    useEffect(() => {
+        getCategoryOptions();
+    }, []);
+
+    const submit = (e) => {
+        e.preventDefault();
+
+        if (data.category_id == "") {
+            data.category_id = document.getElementById("category").value;
+        }
+
+        if (data.privacy == "") {
+            data.privacy = document.getElementById("privacy").value;
+        }
+        console.log("DATA TA TATA == ", data)
+        // Make a Pacth request to the backend with the form data
+        // patch(route('videos.update', data), {
+        //   preserveScroll: true,
+        //   forceFormData: true
+        // });
+    };
+
+    return (
+        <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Category</h2>
+                <h2 className="text-lg font-medium text-gray-900">Video</h2>
 
-                <p className="mt-1 text-sm text-gray-600">
-                    Update your category's name and/or description.
-                </p>
+                <p className="mt-1 text-sm text-gray-600">Update your Video.</p>
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="title" value="Title" />
 
                     <TextInput
-                        id="name"
+                        id="title"
                         className="mt-1 block w-full"
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        value={data.title}
+                        onChange={(e) => setData("title", e.target.value)}
                         required
                         isFocused
-                        autoComplete="name"
+                        autoComplete="title"
                     />
 
-                    <InputError className="mt-2" message={errors.name} />
+                    <InputError className="mt-2" message={errors.title} />
                 </div>
 
                 <div>
@@ -55,12 +90,96 @@ export default function UpdateVideoForm({ category, className }) {
                         type="text"
                         className="mt-1 block w-full"
                         value={data.description}
-                        onChange={(e) => setData('description', e.target.value)}
+                        onChange={(e) => setData("description", e.target.value)}
                         required
                         autoComplete="description"
                     />
 
                     <InputError className="mt-2" message={errors.description} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="category" value="Category" />
+
+                    <SelectInput
+                        id="category"
+                        type="text"
+                        className="mt-1 block w-full"
+                        value={data.category_id}
+                        options={categoryOptions}
+                        onChange={(e) => setData("category_id", e.target.value)}
+                        required
+                        autoComplete="category_id"
+                    />
+
+                    <InputError className="mt-2" message={errors.category_id} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="privacy" value="Privacy" />
+
+                    <SelectInput
+                        id="privacy"
+                        type="text"
+                        className="mt-1 block w-full"
+                        options={privacyOptions}
+                        value={data.privacy}
+                        onChange={(e) => setData("privacy", e.target.value)}
+                        required
+                        autoComplete="privacy"
+                    />
+
+                    <InputError className="mt-2" message={errors.privacy} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="thumbnail" value="Thumbnail" />
+
+                    <FileInput
+                        id="thumbnail"
+                        type="text"
+                        className="mt-1 block w-full"
+                        value={data.thumbnail}
+                        acceptedTypes={thumbFileTypes}
+                        onChange={(e) =>
+                            setData("thumbnail", e.target.files[0])
+                        }
+                        required
+                        autoComplete="thumbnail"
+                    />
+
+                    <InputError className="mt-2" message={errors.thumbnail} />
+                </div>
+
+                <div>
+                    <InputLabel
+                        htmlFor="file_reference"
+                        value="File_reference"
+                    />
+
+                    <FileInput
+                        id="file_reference"
+                        type="text"
+                        className="mt-1 block w-full"
+                        value={data.file_reference}
+                        acceptedTypes={videoFileTypes}
+                        onChange={(e) =>
+                            setData("file_reference", e.target.files[0])
+                        }
+                        required
+                        autoComplete="file_reference"
+                    />
+
+                    {progress && (
+                        <progress value={progress.percentage} max="100">
+                            {progress.percentage}%
+                        </progress>
+                    )}
+
+                    <InputError
+                        className="mt-2"
+                        message={errors.file_reference}
+                    />
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -73,10 +192,12 @@ export default function UpdateVideoForm({ category, className }) {
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                      <p className="text-sm text-gray-600">Saved.</p>
+                        <p className="text-sm text-gray-600">Saved.</p>
                     </Transition>
                 </div>
+
+                <InputError className="mt-2" message={errors.user_id} />
             </form>
         </section>
-  );
+    );
 }

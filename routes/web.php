@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/videos/create', [VideoController::class, 'create'])->name('videos.create');
     Route::get('/videos/{video}', [VideoController::class, 'edit'])->name('videos.edit');
     Route::patch('/videos/{video}', [VideoController::class, 'update'])->name('videos.update');
-    Route::delete('/videos/{video}', [VideoController::class, 'delete'])->name('videos.delete');
+    Route::delete('/videos/{video}', [VideoController::class, 'destroy'])->name('videos.delete');
 
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/select', [CategoryController::class, 'getCategoriesForSelect'])->name('categories.select');

@@ -1,18 +1,27 @@
 import Notification from "@/Components/Notification";
-import Table from "@/Components/Table";
+import Table from "@/Components/PersonalizedTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
 
-const columns = [
-    "title",
-    "description",
-    "privacy",
-];
-
 export default function All({ auth, videos }) {
-
+    console.log("DATA VIDEOS = ", videos)
+    window.videos = videos;
     const { flash } = usePage().props
     
+    const columns = [
+        'title',
+        'description',
+        'category',
+        'privacy'
+    ]
+
+    const tableArrayKeys = [
+        'title',
+        'description',
+        'category.name',
+        'privacy'
+    ]
+
     console.log(flash)
 
     return (
@@ -36,8 +45,10 @@ export default function All({ auth, videos }) {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">                      
                         <Table
                             items={videos}
-                            columns={columns}
                             primary="Video ID"
+                            model={'video'}
+                            columns={columns}
+                            dataKeys={tableArrayKeys}
                             firstAction={"videos.edit"}
                             secondAction={"videos.delete"}
                         ></Table>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVideoRequest;
+use App\Http\Requests\UpdateVideoRequest;
+use App\Models\Category;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,7 +18,7 @@ class VideoController extends Controller
     public function index() : Response
     {
         $user = auth()->user();
-        $videos = Video::where('user_id', $user->id)->get();
+        $videos = Video::with('category')->where('user_id', $user->id)->get();
 
         return Inertia::render('Videos/All', [
             'videos' => $videos,
@@ -76,17 +78,43 @@ class VideoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Video $video) : void
+    public function update(UpdateVideoRequest $request, Video $video)
     {
-        $video->update($request->all());
+        $data = $request->validated();
+
+        if ($video->update($data)) {
+            $response = [
+                'message' => 'Category updated successfully!',
+                'status' => 'success',
+            ];
+        } else {
+            $response = [
+                'message' => 'Something happened while updating the category!',
+                'status' => 'error',
+            ];
+        }
+
+        return to_route('videos.index')->with($response);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Video $video) : void
+    public function destroy(Video $video)
     {
-        $video->delete();
+        if ($video->delete()) {
+            $response = [
+                'message' => 'Video deleted successfully!',
+                'status' => 'success',
+            ];
+        } else {
+            $response = [
+                'message' => 'Something happened while deleting the video!',
+                'status' => 'error',
+            ];
+        }
+
+        return to_route('videos.index')->with($response);
     }
 
     /**

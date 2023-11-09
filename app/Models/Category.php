@@ -36,4 +36,19 @@ class Category extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * get description attribute reduced characters
+     *
+     * @param mixed $value
+     */
+    public function getDescriptionAttribute($value)
+    {
+        $maxLength = 50;
+        if (strlen($value) > $maxLength) {
+            return substr($value, 0, $maxLength) . '...';
+        } else {
+            return $value;
+        }
+    }
 }

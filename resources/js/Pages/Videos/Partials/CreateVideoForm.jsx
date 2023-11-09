@@ -14,7 +14,7 @@ export default function CreateVideoForm({ className }) {
     const user = usePage().props.auth.user;
     const [categoryOptions, setCategoryOptions] = useState([]);
 
-    const { data, setData, post, errors, processing, progress, recentlySuccessful } =
+    const { data, setData, post, get, errors, processing, progress, recentlySuccessful } =
         useForm({
             title: "",
             description: "",
@@ -31,6 +31,13 @@ export default function CreateVideoForm({ className }) {
             setCategoryOptions(response.data);
         });
     }
+
+    // const getCategoryOptions = () => {
+    //         get(route('categories.select'))
+    //         .then((response) => {
+    //             setCategoryOptions(response.data);
+    //         });
+    //     }
 
     const privacyOptions = ["Listed", "Unlisted", "Private"];
 
@@ -51,7 +58,7 @@ export default function CreateVideoForm({ className }) {
         if (data.privacy == "") {
             data.privacy = document.getElementById("privacy").value;
         }
-        console.log("DATA = ", data)
+
         // Make a POST request to the backend with the form data
         post(route('videos.store', data), {
           preserveScroll: true,

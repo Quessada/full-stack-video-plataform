@@ -10,6 +10,7 @@ export default function Table({
     items,
     columns,
     primary,
+    model,
     firstAction = null,
     secondAction = null,
 }) {
@@ -17,7 +18,7 @@ export default function Table({
 
     const onDelete = (item) => {
         Swal.fire({
-            title: "Are you sure you want to delete this category?",
+            title: "Are you sure you want to delete this "+ model+ "?",
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
@@ -34,6 +35,11 @@ export default function Table({
         });
     };
 
+    function getObjectProperty(obj, path) {
+        const properties = path.split(".");
+        return properties.reduce((prev, curr) => prev && prev[curr], obj);
+      }
+
     return (
         <div className="relative overflow-x-auto border shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -47,7 +53,7 @@ export default function Table({
                                 {column}
                             </th>
                         ))}
-                        <th scope="col" className="px-6 py-3"></th>
+                        <th scope="col" className="px-6 py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,7 +70,7 @@ export default function Table({
                             </th>
                             {columns.map((column) => (
                                 <td key={column} className="px-6 py-4">
-                                    {item[column]}
+                                    {getObjectProperty(item, column)}
                                 </td>
                             ))}
                             <td className="px-6 py-4 text-center">
