@@ -1,5 +1,5 @@
 export default function PaginationLinks({ meta, onPageClick }) {
-
+    console.log("META == ", meta)
     function onClick(ev, link) {
         ev.preventDefault();
 

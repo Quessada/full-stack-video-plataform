@@ -18,7 +18,7 @@ class VideoController extends Controller
     public function index() : Response
     {
         $user = auth()->user();
-        $videos = Video::with('category')->where('user_id', $user->id)->get();
+        $videos = Video::with('category')->where('user_id', $user->id)->paginate(10);
 
         return Inertia::render('Videos/All', [
             'videos' => $videos,
