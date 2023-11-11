@@ -10,7 +10,6 @@ import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
 export default function UpdateVideoForm({ video, className }) {
-
     const [categoryOptions, setCategoryOptions] = useState([]);
 
     const privacyOptions = ["Listed", "Unlisted", "Private"];
@@ -18,19 +17,27 @@ export default function UpdateVideoForm({ video, className }) {
     const videoFileTypes = [".MP4", ".MPG", ".AVI", ".WMV", ".MOV"];
     const thumbFileTypes = [".JPG", ".GIF", ".PNG"];
 
-    const { data, setData, patch, errors, processing, progress, recentlySuccessful } =
-        useForm({
-            title: video.title,
-            description: video.description,
-            privacy: video.privacy,
-            thumbnail: video.thumbnail,
-            file_reference: video.file_reference,
-            user_id: video.id,
-            category_id: video.category_id,
-        });
+    const {
+        data,
+        setData,
+        patch,
+        post,
+        errors,
+        processing,
+        progress,
+        recentlySuccessful,
+    } = useForm({
+        title: video.title,
+        description: video.description,
+        privacy: video.privacy,
+        thumbnail: video.thumbnail,
+        file_reference: video.file_reference,
+        user_id: video.user_id,
+        category_id: video.category_id,
+    });
 
     const getCategoryOptions = () => {
-        console.log("VIDEOOOO == ", video)
+        console.log("VIDEOOOO == ", video);
         axiosClient.get(route("categories.select")).then((response) => {
             setCategoryOptions(response.data);
         });
@@ -49,12 +56,17 @@ export default function UpdateVideoForm({ video, className }) {
         if (data.privacy == "") {
             data.privacy = document.getElementById("privacy").value;
         }
-        console.log("DATA TA TATA == ", data)
-        // Make a Pacth request to the backend with the form data
-        // patch(route('videos.update', data), {
-        //   preserveScroll: true,
-        //   forceFormData: true
-        // });
+
+        // if(video.thumbnail == "") {
+        //     video.thumbnail = "empty-thumbnail.jpg"
+        // }
+        console.log("Video before post == ", video)
+
+        // Make a PATCH request to the backend with the form data
+        post(route("videos.update", [video.id, { _method: "PATCH" }]), {
+            preserveScroll: true,
+            forceFormData: true,
+        });
     };
 
     return (
@@ -144,7 +156,6 @@ export default function UpdateVideoForm({ video, className }) {
                         onChange={(e) =>
                             setData("thumbnail", e.target.files[0])
                         }
-                        required
                         autoComplete="thumbnail"
                     />
 
@@ -166,7 +177,6 @@ export default function UpdateVideoForm({ video, className }) {
                         onChange={(e) =>
                             setData("file_reference", e.target.files[0])
                         }
-                        required
                         autoComplete="file_reference"
                     />
 

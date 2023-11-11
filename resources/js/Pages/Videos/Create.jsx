@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import CreateVideoForm from "./Partials/CreateVideoForm";
 
-export default function All({ auth, category }) {
+export default function All({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}

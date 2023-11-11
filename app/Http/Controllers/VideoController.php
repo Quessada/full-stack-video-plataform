@@ -39,9 +39,12 @@ class VideoController extends Controller
     public function store(StoreVideoRequest $request)
     {
         $data = $request->validated();
-        $data['thumbnail'] = $this->handleFile($data['thumbnail']);
-        $data['file_reference'] = $this->handleFile($data['file_reference']);
-        // dd($data);
+
+        if (isset($data['thumbnail']) && $data['thumbnail'] !== null) {
+            $data['thumbnail'] = $this->handleFile($data['thumbnail'], 'images');
+        }
+        $data['file_reference'] = $this->handleFile($data['file_reference'], 'videos');
+        
         if (Video::create($data)) {
             $response = [
                 'message' => 'Video created successfully!',
@@ -81,15 +84,23 @@ class VideoController extends Controller
     public function update(UpdateVideoRequest $request, Video $video)
     {
         $data = $request->validated();
+        // dd($data);
+        if (isset($data['thumbnail']) && ($data['thumbnail'] !== null) && is_file($data['thumbnail'])) {
+            $data['thumbnail'] = $this->handleFile($data['thumbnail'], 'images');
+        }
+
+        if (isset($data['file_reference']) && $data['file_reference'] !== null && is_file($data['file_reference'])) {
+            $data['file_reference'] = $this->handleFile($data['file_reference'], 'videos');
+        }
 
         if ($video->update($data)) {
             $response = [
-                'message' => 'Category updated successfully!',
+                'message' => 'Video updated successfully!',
                 'status' => 'success',
             ];
         } else {
             $response = [
-                'message' => 'Something happened while updating the category!',
+                'message' => 'Something happened while updating the video!',
                 'status' => 'error',
             ];
         }
@@ -120,11 +131,11 @@ class VideoController extends Controller
     /**
      * HandleFileVerification.
      */
-    public function handleFile($file) : string
+    public function handleFile($file, $type) : string
     {
         if ($file->isValid()) {
-            $fileName = uniqid().time()."_{$file->getClientOriginalName()}";
-            $storagedFile = $file->storeAs('videos', $fileName);
+            $fileName = uniqid()."_{$file->getClientOriginalName()}";
+            $storagedFile = $file->storeAs($type, $fileName);
         }        
         
         return $storagedFile ?? '';

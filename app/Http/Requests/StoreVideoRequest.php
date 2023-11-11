@@ -26,7 +26,7 @@ class StoreVideoRequest extends FormRequest
             'title' => 'required|string|max:100',
             'description' => 'required|string|max:1500',
             'privacy' => 'required|string',
-            'thumbnail' => 'mimes:jpg,gif,png',
+            'thumbnail' => 'sometimes|nullable|mimes:jpg,gif,png',
             'file_reference' => 'required|mimes:mp4,mpg,wmv,mov',
             'user_id' => ['required', 'exists:users,id', new UserAuthenticatedRule],
             'category_id' => 'required|exists:categories,id'

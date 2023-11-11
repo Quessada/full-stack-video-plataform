@@ -21,7 +21,7 @@ export default forwardRef(function SelectInput({ className = '', isFocused = fal
             {options.map((option) => {
                 if (typeof option === 'string') {
                     return (
-                        <option key={option} value={option}>
+                        <option key={option} value={option.toLowerCase()}>
                             {option}
                         </option>
                     );

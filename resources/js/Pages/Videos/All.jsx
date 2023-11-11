@@ -4,7 +4,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
 
 export default function All({ auth, videos }) {
-    console.log("DATA VIDEOS = ", videos)
+
     window.videos = videos;
     const { flash } = usePage().props
     

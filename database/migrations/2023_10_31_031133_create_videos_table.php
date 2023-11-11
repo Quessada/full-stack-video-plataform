@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->longText('description')->nullable();
             $table->enum('privacy', ['listed', 'unlisted', 'private']);
-            $table->string('thumbnail')->default('empty-thumbnail.jpg');
+            $table->string('thumbnail')->default('empty-thumbnail.jpg')->nullable();
             $table->string('file_reference');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->constrained();

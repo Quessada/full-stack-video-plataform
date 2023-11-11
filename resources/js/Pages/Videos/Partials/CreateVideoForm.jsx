@@ -151,7 +151,6 @@ export default function CreateVideoForm({ className }) {
                         value={data.thumbnail}
                         acceptedTypes={thumbFileTypes}
                         onChange={(e) => setData("thumbnail", e.target.files[0])}
-                        required
                         autoComplete="thumbnail"
                     />
 
