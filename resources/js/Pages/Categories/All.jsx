@@ -1,4 +1,5 @@
 import Notification from "@/Components/Notification";
+import PaginationLinks from "@/Components/PaginationLinks";
 import Table from "@/Components/SimpleTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
@@ -29,7 +30,7 @@ export default function All({ auth, categories }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">                      
                         <Table
-                            items={categories}
+                            items={categories.data}
                             columns={columns}
                             model={'category'}
                             primary="Category ID"
@@ -39,6 +40,10 @@ export default function All({ auth, categories }) {
                     </div>
                 </div>
             </div>
+
+            {categories.data.length > 0 && 
+                <PaginationLinks meta={categories} />
+            }
         </AuthenticatedLayout>
     );
 }

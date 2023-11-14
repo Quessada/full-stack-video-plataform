@@ -1,14 +1,4 @@
-export default function PaginationLinks({ meta, onPageClick }) {
-    console.log("META == ", meta)
-    function onClick(ev, link) {
-        ev.preventDefault();
-
-        if(!link.url) {
-            return;
-        }
-        onPageClick(link);
-    }
-
+export default function PaginationLinks({ meta }) {
     return (
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 shadow-md mt-4">
             <div className="flex flex-1 justify-between sm:hidden">
@@ -43,8 +33,8 @@ export default function PaginationLinks({ meta, onPageClick }) {
                         {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
                         {meta.links && meta.links.map((link, index) => (
                             <a
-                                href="#"
-                                onClick={ev => onClick(ev, link)}
+                                key={index}
+                                href={link.url}
                                 aria-current="page"
                                 className={
                                     "relative z-10 ring-1 ring-inset ring-gray-300 inline-flex items-center px-4 py-2 text-sm font-medium focus:z-20 hover:bg-gray-50 " 

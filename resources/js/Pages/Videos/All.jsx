@@ -6,24 +6,12 @@ import axiosClient from "@/axios-client";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 
 export default function All({ auth, videos }) {
-    window.videos = videos;
+
     const { flash } = usePage().props;
-    // const [videos, setVideos] = useState([]);
-    const { get } = useForm();
     const columns = ["title", "description", "category", "privacy"];
 
     const tableArrayKeys = ["title", "description", "category.name", "privacy"];
 
-    const onPageClick = (link) => {
-        console.log("LINK = ", link)
-        axiosClient.get(link.url)
-        .then((response) => {
-            console.log("RESPONSE paginate == ", response.data)
-        });
-    };
-
-    console.log(flash);
-    console.log("META =321321312 ", videos);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -59,7 +47,9 @@ export default function All({ auth, videos }) {
                 </div>
             </div>
 
-            <PaginationLinks meta={videos} onPageClick={onPageClick} />
+        {videos.data.length > 0 && 
+            <PaginationLinks meta={videos} />
+        }
         </AuthenticatedLayout>
     );
 }
