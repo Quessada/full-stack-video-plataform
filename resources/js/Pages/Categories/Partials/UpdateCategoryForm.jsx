@@ -1,27 +1,37 @@
+import DescriptionInput from "@/Components/DescriptionInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Transition } from "@headlessui/react";
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import React, { useState, useEffect } from "react";
 
 export default function UpdateCategoryForm({ category, className }) {
+    const user = usePage().props.auth.user;
+    const [descriptionCharacters, setDescriptionCharacters] = useState(0);
 
-  const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-    name: category.name,
-    description: category.description,
-  });
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
+        useForm({
+            name: category.name,
+            description: category.description,
+            user_id: user.id,
+        });
 
-  const submit = (e) => {
-    e.preventDefault();
+    const submit = (e) => {
+        e.preventDefault();
 
-    patch(route('categories.update', category.id),{
-        preserveScroll: true,
-    });
-  };
+        patch(route("categories.update", category.id), {
+            preserveScroll: true,
+        });
+    };
 
-  return (
-    <section className={className}>
+    useEffect(() => {
+        setDescriptionCharacters(data.description.length);
+    }, [data.description]);
+
+    return (
+        <section className={className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">Category</h2>
 
@@ -38,7 +48,7 @@ export default function UpdateCategoryForm({ category, className }) {
                         id="name"
                         className="mt-1 block w-full"
                         value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e) => setData("name", e.target.value)}
                         required
                         isFocused
                         autoComplete="name"
@@ -50,14 +60,20 @@ export default function UpdateCategoryForm({ category, className }) {
                 <div>
                     <InputLabel htmlFor="description" value="Description" />
 
-                    <TextInput
+                    <DescriptionInput
                         id="description"
-                        type="text"
                         className="mt-1 block w-full"
+                        rows={5}
                         value={data.description}
-                        onChange={(e) => setData('description', e.target.value)}
+                        onChange={(e) => setData("description", e.target.value)}
                         required
                         autoComplete="description"
+                    />
+
+                    <InputLabel
+                        className="pt-2"
+                        htmlFor="description"
+                        value={"Characters = " + descriptionCharacters}
                     />
 
                     <InputError className="mt-2" message={errors.description} />
@@ -73,10 +89,10 @@ export default function UpdateCategoryForm({ category, className }) {
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                      <p className="text-sm text-gray-600">Saved.</p>
+                        <p className="text-sm text-gray-600">Saved.</p>
                     </Transition>
                 </div>
             </form>
         </section>
-  );
+    );
 }

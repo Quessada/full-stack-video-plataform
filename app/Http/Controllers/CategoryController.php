@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -19,6 +20,11 @@ class CategoryController extends Controller
     {
         $user = auth()->user();
         $categories = Category::where('user_id', $user->id)->paginate(10);
+
+        //Supress the category description in 50 characters
+        foreach ($categories as $category) {
+            $category->description = Str::limit($category->description, 50);
+        }
 
         return Inertia::render('Categories/All', [
             'categories' => $categories,

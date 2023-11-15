@@ -7,9 +7,8 @@ import { Head, Link, usePage } from "@inertiajs/react";
 const columns = ["name", "description"];
 
 export default function All({ auth, categories }) {
-
-    const { flash } = usePage().props
-    
+    const { flash } = usePage().props;
+    console.log("FLASH == ", flash);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -20,19 +19,22 @@ export default function All({ auth, categories }) {
             }
         >
             <Head title="Dashboard" />
-            {flash && (
-               <Notification response={flash}/>
-            )}
+            {flash && <Notification response={flash} />}
             <div className="py-12">
                 <div className="flex justify-end max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <Link href={route('categories.create')} className="h-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Add New</Link>
+                    <Link
+                        href={route("categories.create")}
+                        className="h-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    >
+                        Add New
+                    </Link>
                 </div>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">                      
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <Table
                             items={categories.data}
                             columns={columns}
-                            model={'category'}
+                            model={"category"}
                             primary="Category ID"
                             firstAction={"categories.edit"}
                             secondAction={"categories.delete"}
@@ -41,9 +43,9 @@ export default function All({ auth, categories }) {
                 </div>
             </div>
 
-            {categories.data.length > 0 && 
+            {categories.data.length > 0 && (
                 <PaginationLinks meta={categories} />
-            }
+            )}
         </AuthenticatedLayout>
     );
 }
