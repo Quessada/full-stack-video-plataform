@@ -8,6 +8,8 @@ import axiosClient from "@/axios-client";
 import { Transition } from "@headlessui/react";
 import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export default function UpdateVideoForm({ video, className }) {
     const [categoryOptions, setCategoryOptions] = useState([]);
@@ -60,7 +62,7 @@ export default function UpdateVideoForm({ video, className }) {
         // if(video.thumbnail == "") {
         //     video.thumbnail = "empty-thumbnail.jpg"
         // }
-        console.log("Video before post == ", video)
+        console.log("Video before post == ", video);
 
         // Make a PATCH request to the backend with the form data
         post(route("videos.update", [video.id, { _method: "PATCH" }]), {
@@ -97,7 +99,13 @@ export default function UpdateVideoForm({ video, className }) {
                 <div>
                     <InputLabel htmlFor="description" value="Description" />
 
-                    <TextInput
+                    <ReactQuill
+                        theme="snow"
+                        value={data.description}
+                        onChange={(e) => setData("description", e)}
+                    />
+
+                    {/* <TextInput
                         id="description"
                         type="text"
                         className="mt-1 block w-full"
@@ -105,7 +113,7 @@ export default function UpdateVideoForm({ video, className }) {
                         onChange={(e) => setData("description", e.target.value)}
                         required
                         autoComplete="description"
-                    />
+                    /> */}
 
                     <InputError className="mt-2" message={errors.description} />
                 </div>

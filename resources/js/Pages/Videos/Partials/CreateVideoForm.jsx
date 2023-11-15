@@ -8,36 +8,37 @@ import { Transition } from "@headlessui/react";
 import { useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
+import TextAreaEditor from "@/Components/TextAreaEditor";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export default function CreateVideoForm({ className }) {
-
     const user = usePage().props.auth.user;
     const [categoryOptions, setCategoryOptions] = useState([]);
 
-    const { data, setData, post, get, errors, processing, progress, recentlySuccessful } =
-        useForm({
-            title: "",
-            description: "",
-            privacy: "",
-            thumbnail: null,
-            file_reference: null,
-            user_id: user.id,
-            category_id: "",
-        });
+    const {
+        data,
+        setData,
+        post,
+        errors,
+        processing,
+        progress,
+        recentlySuccessful,
+    } = useForm({
+        title: "",
+        description: "",
+        privacy: "",
+        thumbnail: null,
+        file_reference: null,
+        user_id: user.id,
+        category_id: "",
+    });
 
     const getCategoryOptions = () => {
-        axiosClient.get(route('categories.select'))
-        .then((response) => {
+        axiosClient.get(route("categories.select")).then((response) => {
             setCategoryOptions(response.data);
         });
-    }
-
-    // const getCategoryOptions = () => {
-    //         get(route('categories.select'))
-    //         .then((response) => {
-    //             setCategoryOptions(response.data);
-    //         });
-    //     }
+    };
 
     const privacyOptions = ["Listed", "Unlisted", "Private"];
 
@@ -46,7 +47,7 @@ export default function CreateVideoForm({ className }) {
 
     useEffect(() => {
         getCategoryOptions();
-    }, [])
+    }, []);
 
     const submit = (e) => {
         e.preventDefault();
@@ -60,9 +61,9 @@ export default function CreateVideoForm({ className }) {
         }
 
         // Make a POST request to the backend with the form data
-        post(route('videos.store', data), {
-          preserveScroll: true,
-          forceFormData: true
+        post(route("videos.store", data), {
+            preserveScroll: true,
+            forceFormData: true,
         });
     };
 
@@ -94,14 +95,10 @@ export default function CreateVideoForm({ className }) {
                 <div>
                     <InputLabel htmlFor="description" value="Description" />
 
-                    <TextInput
-                        id="description"
-                        type="text"
-                        className="mt-1 block w-full"
+                    <ReactQuill
+                        theme="snow"
                         value={data.description}
-                        onChange={(e) => setData("description", e.target.value)}
-                        required
-                        autoComplete="description"
+                        onChange={(e) => setData("description", e)}
                     />
 
                     <InputError className="mt-2" message={errors.description} />
@@ -133,7 +130,7 @@ export default function CreateVideoForm({ className }) {
                         className="mt-1 block w-full"
                         options={privacyOptions}
                         value={data.privacy}
-                        onChange={(e) => setData('privacy', e.target.value)}
+                        onChange={(e) => setData("privacy", e.target.value)}
                         required
                         autoComplete="privacy"
                     />
@@ -150,7 +147,9 @@ export default function CreateVideoForm({ className }) {
                         className="mt-1 block w-full"
                         value={data.thumbnail}
                         acceptedTypes={thumbFileTypes}
-                        onChange={(e) => setData("thumbnail", e.target.files[0])}
+                        onChange={(e) =>
+                            setData("thumbnail", e.target.files[0])
+                        }
                         autoComplete="thumbnail"
                     />
 
