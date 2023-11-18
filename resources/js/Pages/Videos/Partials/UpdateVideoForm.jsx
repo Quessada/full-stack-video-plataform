@@ -4,9 +4,10 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SelectInput from "@/Components/SelectInput";
 import TextInput from "@/Components/TextInput";
+import ImagePreview from "@/Components/ImagePreview";
 import axiosClient from "@/axios-client";
 import { Transition } from "@headlessui/react";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -18,6 +19,10 @@ export default function UpdateVideoForm({ video, className }) {
 
     const videoFileTypes = [".MP4", ".MPG", ".AVI", ".WMV", ".MOV"];
     const thumbFileTypes = [".JPG", ".GIF", ".PNG"];
+
+    const [thumbnailUrl, setThumbnailUrl] = useState("");
+
+    console.log("PAGE PROPS == ", usePage().props);
 
     const {
         data,
@@ -39,11 +44,11 @@ export default function UpdateVideoForm({ video, className }) {
     });
 
     const getCategoryOptions = () => {
-        console.log("VIDEOOOO == ", video);
         axiosClient.get(route("categories.select")).then((response) => {
             setCategoryOptions(response.data);
         });
     };
+
     useEffect(() => {
         getCategoryOptions();
     }, []);
@@ -154,6 +159,21 @@ export default function UpdateVideoForm({ video, className }) {
 
                 <div>
                     <InputLabel htmlFor="thumbnail" value="Thumbnail" />
+
+                    {data.thumbnail && (
+                        <div>
+                            <button
+                                className="border-solid border-1 border-slate-600 bg-slate-400 w-7"
+                                onClick={() => removeImage(pic.id)}
+                            >
+                                X
+                            </button>
+                            <ImagePreview
+                                imagePath={data.thumbnail}
+                                className="backdrop-grayscale-0"
+                            />
+                        </div>
+                    )}
 
                     <FileInput
                         id="thumbnail"

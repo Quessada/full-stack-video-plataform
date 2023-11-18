@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Video extends Model
 {
@@ -53,17 +54,23 @@ class Video extends Model
     }
 
     /**
-     * get description attribute reduced characters
+     * get thumbnail url
      *
      * @param mixed $value
      */
-    // public function getDescriptionAttribute($value)
-    // {
-    //     $maxLength = 50;
-    //     if (strlen($value) > $maxLength) {
-    //         return substr($value, 0, $maxLength) . '...';
-    //     } else {
-    //         return $value;
-    //     }
-    // }
+    public function getThumbnailAttribute($value)
+    {
+        return asset($value);
+    }
+
+    /**
+     * get file_reference url
+     *
+     * @param mixed $value
+     */
+    public function getFileReferenceAttribute($value)
+    {
+        // return asset(Storage::url($value));
+        return asset($value);
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateVideoRequest;
 use App\Models\Category;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -134,8 +135,8 @@ class VideoController extends Controller
     public function handleFile($file, $type) : string
     {
         if ($file->isValid()) {
-            $fileName = uniqid()."_{$file->getClientOriginalName()}";
-            $storagedFile = $file->storeAs($type, $fileName);
+            $fileName = $file->hashName();
+            $storagedFile = Storage::putFileAs('public/'.$type, $file, $fileName);
         }        
         
         return $storagedFile ?? '';

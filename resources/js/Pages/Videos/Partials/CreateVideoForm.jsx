@@ -8,12 +8,12 @@ import { Transition } from "@headlessui/react";
 import { useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-import TextAreaEditor from "@/Components/TextAreaEditor";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 export default function CreateVideoForm({ className }) {
     const user = usePage().props.auth.user;
+
     const [categoryOptions, setCategoryOptions] = useState([]);
 
     const {
