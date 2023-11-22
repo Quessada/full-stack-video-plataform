@@ -8,26 +8,14 @@ import ImagePreview from "@/Components/ImagePreview";
 import axiosClient from "@/axios-client";
 import { Transition } from "@headlessui/react";
 import { useForm, usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 export default function UpdateVideoForm({ video, className }) {
-    const [categoryOptions, setCategoryOptions] = useState([]);
-
-    const privacyOptions = ["Listed", "Unlisted", "Private"];
-
-    const videoFileTypes = [".MP4", ".MPG", ".AVI", ".WMV", ".MOV"];
-    const thumbFileTypes = [".JPG", ".GIF", ".PNG"];
-
-    const [thumbnailUrl, setThumbnailUrl] = useState("");
-
-    console.log("PAGE PROPS == ", usePage().props);
-
     const {
         data,
         setData,
-        patch,
         post,
         errors,
         processing,
@@ -43,15 +31,46 @@ export default function UpdateVideoForm({ video, className }) {
         category_id: video.category_id,
     });
 
+    const [categoryOptions, setCategoryOptions] = useState([]);
+    const [resetKey, setResetKey] = useState(0);
+    const [imagePath, setImagePath] = useState(data.thumbnail);
+
+    const privacyOptions = ["Listed", "Unlisted", "Private"];
+    const videoFileTypes = [".MP4", ".MPG", ".AVI", ".WMV", ".MOV"];
+    const thumbFileTypes = [".JPG", ".GIF", ".PNG"];
+
     const getCategoryOptions = () => {
         axiosClient.get(route("categories.select")).then((response) => {
             setCategoryOptions(response.data);
         });
     };
 
+    //Remove preview image/thumbnail image on "X" Click
+    const removeImage = (e) => {
+        e.preventDefault();
+        setData("thumbnail", "");
+        setImagePath("");
+        setResetKey((prevKey) => prevKey + 1);
+    };
+
     useEffect(() => {
         getCategoryOptions();
     }, []);
+
+    //Generate the image preview if the thumbnail inputFile changes
+    const thumbnailChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const previewImageUrl = e.target.result;
+            setImagePath(previewImageUrl);
+            console.log("IMAGE path == ", previewImageUrl);
+        };
+
+        reader.readAsDataURL(file);
+        setData(data.thumbnail, file);
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -68,8 +87,9 @@ export default function UpdateVideoForm({ video, className }) {
         //     video.thumbnail = "empty-thumbnail.jpg"
         // }
         console.log("Video before post == ", video);
+        console.log("Data before post == ", data);
 
-        // Make a PATCH request to the backend with the form data
+        // Make a PATCH request to the backend with the form data to update the video
         post(route("videos.update", [video.id, { _method: "PATCH" }]), {
             preserveScroll: true,
             forceFormData: true,
@@ -109,16 +129,6 @@ export default function UpdateVideoForm({ video, className }) {
                         value={data.description}
                         onChange={(e) => setData("description", e)}
                     />
-
-                    {/* <TextInput
-                        id="description"
-                        type="text"
-                        className="mt-1 block w-full"
-                        value={data.description}
-                        onChange={(e) => setData("description", e.target.value)}
-                        required
-                        autoComplete="description"
-                    /> */}
 
                     <InputError className="mt-2" message={errors.description} />
                 </div>
@@ -160,16 +170,17 @@ export default function UpdateVideoForm({ video, className }) {
                 <div>
                     <InputLabel htmlFor="thumbnail" value="Thumbnail" />
 
-                    {data.thumbnail && (
+                    {imagePath && (
                         <div>
-                            <button
-                                className="border-solid border-1 border-slate-600 bg-slate-400 w-7"
-                                onClick={() => removeImage(pic.id)}
+                            <span
+                                className="border-solid border-1 border-slate-600 bg-slate-400 w-7 cursor-pointer"
+                                onClick={(e) => removeImage(e)}
                             >
                                 X
-                            </button>
+                            </span>
+
                             <ImagePreview
-                                imagePath={data.thumbnail}
+                                imagePath={imagePath}
                                 className="backdrop-grayscale-0"
                             />
                         </div>
@@ -178,12 +189,14 @@ export default function UpdateVideoForm({ video, className }) {
                     <FileInput
                         id="thumbnail"
                         type="text"
+                        key={resetKey}
                         className="mt-1 block w-full"
                         value={data.thumbnail}
                         acceptedTypes={thumbFileTypes}
-                        onChange={(e) =>
-                            setData("thumbnail", e.target.files[0])
-                        }
+                        // onChange={(e) =>
+                        //     setData("thumbnail", e.target.files[0])
+                        // }
+                        onChange={(e) => thumbnailChange(e)}
                         autoComplete="thumbnail"
                     />
 
