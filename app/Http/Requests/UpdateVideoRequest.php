@@ -31,7 +31,9 @@ class UpdateVideoRequest extends FormRequest
             'thumbnail' => 'sometimes|nullable',
             'file_reference' => 'required',
             'user_id' => ['required', 'exists:users,id', new UserAuthenticatedRule],
-            'category_id' => 'required|exists:categories,id'
+            'category_id' => 'required|exists:categories,id',
+            'isThumbUpdated' => 'required|boolean',
+            'isFileUpdated' => 'required|boolean'
         ];
     }
 }

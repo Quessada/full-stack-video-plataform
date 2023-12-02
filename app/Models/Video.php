@@ -60,7 +60,9 @@ class Video extends Model
      */
     public function getThumbnailAttribute($value)
     {
-        return asset($value);
+        // return asset($value);
+        return asset(Storage::url($value));
+
     }
 
     /**
@@ -70,7 +72,7 @@ class Video extends Model
      */
     public function getFileReferenceAttribute($value)
     {
-        // return asset(Storage::url($value));
-        return asset($value);
+        return asset(Storage::url($value));
+        // return asset($value);
     }
 }

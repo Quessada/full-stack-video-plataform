@@ -1,18 +1,23 @@
 import FileInput from "@/Components/FileInput";
+import ImagePreview from "@/Components/ImagePreview";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SelectInput from "@/Components/SelectInput";
 import TextInput from "@/Components/TextInput";
-import ImagePreview from "@/Components/ImagePreview";
 import axiosClient from "@/axios-client";
 import { Transition } from "@headlessui/react";
-import { useForm, usePage } from "@inertiajs/react";
-import { useEffect, useState, useRef } from "react";
+import { useForm } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 export default function UpdateVideoForm({ video, className }) {
+    const [categoryOptions, setCategoryOptions] = useState([]);
+    const [resetKey, setResetKey] = useState(0);
+    const [isThumbUpdated, setIsThumbUpdated] = useState(false);
+    const [isFileUpdated, setIsFileUpdated] = useState(false);
+
     const {
         data,
         setData,
@@ -29,16 +34,16 @@ export default function UpdateVideoForm({ video, className }) {
         file_reference: video.file_reference,
         user_id: video.user_id,
         category_id: video.category_id,
+        isFileUpdated: isFileUpdated,
+        isThumbUpdated: isThumbUpdated,
     });
-
-    const [categoryOptions, setCategoryOptions] = useState([]);
-    const [resetKey, setResetKey] = useState(0);
     const [imagePath, setImagePath] = useState(data.thumbnail);
 
     const privacyOptions = ["Listed", "Unlisted", "Private"];
     const videoFileTypes = [".MP4", ".MPG", ".AVI", ".WMV", ".MOV"];
     const thumbFileTypes = [".JPG", ".GIF", ".PNG"];
 
+    //Get the category options for the select
     const getCategoryOptions = () => {
         axiosClient.get(route("categories.select")).then((response) => {
             setCategoryOptions(response.data);
@@ -50,9 +55,14 @@ export default function UpdateVideoForm({ video, className }) {
         e.preventDefault();
         setData("thumbnail", "");
         setImagePath("");
+        setIsThumbUpdated(true);
+        setData("isThumbUpdated", isThumbUpdated);
+        console.log("SET IS THUMB UPDATED", isThumbUpdated, data);
+
         setResetKey((prevKey) => prevKey + 1);
     };
 
+    //Trigger the get category options
     useEffect(() => {
         getCategoryOptions();
     }, []);
@@ -60,16 +70,19 @@ export default function UpdateVideoForm({ video, className }) {
     //Generate the image preview if the thumbnail inputFile changes
     const thumbnailChange = (e) => {
         const file = e.target.files[0];
+        setData("thumbnail", file);
+        setIsThumbUpdated(true);
+        setData("isThumbUpdated", isThumbUpdated);
+        console.log("SET IS THUMB UPDATED", isThumbUpdated, data);
+
         const reader = new FileReader();
 
         reader.onload = (e) => {
             const previewImageUrl = e.target.result;
             setImagePath(previewImageUrl);
-            console.log("IMAGE path == ", previewImageUrl);
         };
 
         reader.readAsDataURL(file);
-        setData(data.thumbnail, file);
     };
 
     const submit = (e) => {
@@ -171,9 +184,9 @@ export default function UpdateVideoForm({ video, className }) {
                     <InputLabel htmlFor="thumbnail" value="Thumbnail" />
 
                     {imagePath && (
-                        <div>
+                        <div className="relative block">
                             <span
-                                className="border-solid border-1 border-slate-600 bg-slate-400 w-7 cursor-pointer"
+                                className="z-10 border-solid border-1 border-slate-600 bg-slate-400 w-7 cursor-pointer rounded-full p-1 text-white absolute top-0 right-0"
                                 onClick={(e) => removeImage(e)}
                             >
                                 X
